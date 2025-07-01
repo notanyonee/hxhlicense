@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pendaftaran Hunter x Hunter</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #1f2937, #000);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #facc15;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .hidden { display: none; }
+    .card, .partner-card, .map-card {
+      border: 2px solid #facc15;
+      padding: 1rem;
+      margin: 1rem;
+      display: inline-block;
+      background-color: #2d2d2d;
+      cursor: pointer;
+      transition: transform 0.3s;
+      border-radius: 10px;
+    }
+    .card:hover, .partner-card:hover, .map-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #facc15;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #f59e0b;
+      border: none;
+      color: white;
+      cursor: pointer;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #d97706;
+    }
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pendaftaran Hunter x Hunter</h1>
+
+  <div id="step1">
+    <audio id="dramaticSound" src="hxh.mp3" autoplay></audio>
+    <p>Masukkan nama kamu untuk memulai petualangan:</p>
+    <input type="text" id="nama" placeholder="Nama Hunter" />
+    <br />
+    <button onclick="lanjutKeStep2()">Daftar Sekarang!</button>
+  </div>  
+
+  <div id="step2" class="hidden">
+    <p>Pilih jenis kartu lisensi Hunter kamu:</p>
+    <div id="card-container"></div>
+  </div>
+
+  <div id="step3" class="hidden">
+    <p>Pilih partner petualangan kamu:</p>
+    <div id="partner-container"></div>
+  </div>
+
+  <div id="step4" class="hidden">
+    <h2 id="ucapan"></h2>
+    <p style="color: #38bdf8; font-style: italic;">Dengan lisensi dan partner yang kamu pilih, petualanganmu dimulai!</p>
+    <p>Pilih tujuan petualangan kamu di dunia Hunter x Hunter:</p>
+    <div id="map-container"></div>
+    <p id="tujuan-pilihan"></p>
+    <button onclick="ulang()">Mulai Lagi</button>
+  </div>
+
+  <script>
+    const cards = [
+      { title: "Hunter Profesional", img: "prof.png" },
+      { title: "Hunter Gourmet", img: "grmt.png" },
+      { title: "Hunter Beast", img: "bst.png" },
+      { title: "Hunter Nen", img: "nen.png" }
+    ];
+
+    const partners = [
+      { name: "Hisoka", img: "images hisoka.png" },
+      { name: "Gon", img: "images gon.png" },
+      { name: "Killua", img: "images killua.png" },
+      { name: "Leorio", img: "images leorio.png" },
+      { name: "Kurapika", img: "images kurapika.png" },
+      { name: "Netero", img: "images netero.png" },
+      { name: "Kite", img: "images kite.png" },
+      { name: "Tonpa", img: "images tonpa.png" }
+    ];
+
+    const maps = [
+      { name: "Yorknew City", img: "yorknew.png" },
+      { name: "Greed Island", img: "greedisland.png" },
+      { name: "NGL", img: "ngl.png" },
+      { name: "Zoldyck Estate", img: "zoldyck.png" }
+    ];
+
+    let nama = "";
+    let kartuTerpilih = null;
+    let partnerTerpilih = null;
+
+    function lanjutKeStep2() {
+      nama = document.getElementById("nama").value;
+      if (!nama.trim()) return alert("Isi nama dulu ya!");
+
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+
+      const container = document.getElementById("card-container");
+      container.innerHTML = "";
+      cards.forEach((card) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<img src="${card.img}" alt="${card.title}" width="200"><br><strong>${card.title}</strong>`;
+        div.onclick = () => {
+          kartuTerpilih = card;
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step3").classList.remove("hidden");
+          tampilkanPartner();
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function tampilkanPartner() {
+      const container = document.getElementById("partner-container");
+      container.innerHTML = "";
+      partners.forEach((partner) => {
+        const div = document.createElement("div");
+        div.className = "partner-card";
+        div.innerHTML = `<img src="${partner.img}" alt="${partner.name}" width="120"><br><strong>${partner.name}</strong>`;
+        div.onclick = () => {
+          partnerTerpilih = partner;
+          document.getElementById("step3").classList.add("hidden");
+          document.getElementById("step4").classList.remove("hidden");
+          document.getElementById("ucapan").innerText = `Selamat, Hunter ${nama}! Kamu telah mendapatkan kartu ${kartuTerpilih.title} dan memilih partner ${partner.name}.`;
+          tampilkanPeta();
+          document.getElementById("dramaticSound").play();
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function tampilkanPeta() {
+      const container = document.getElementById("map-container");
+      container.innerHTML = "";
+      maps.forEach((map) => {
+        const div = document.createElement("div");
+        div.className = "map-card";
+        div.innerHTML = `<img src="${map.img}" alt="${map.name}" width="160"><br><strong>${map.name}</strong>`;
+        div.onclick = () => {
+          document.getElementById("tujuan-pilihan").innerText = `Tujuanmu sekarang adalah: ${map.name}`;
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function ulang() {
+      document.getElementById("nama").value = "";
+      document.getElementById("step4").classList.add("hidden");
+      document.getElementById("step1").classList.remove("hidden");
+      document.getElementById("tujuan-pilihan").innerText = "";
+    }
+  </script>
+</body>
+</html>
